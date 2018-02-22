@@ -17,7 +17,9 @@
         'data-tooltip': movie.title
       });
 
-      $title.tooltip({ delay: 50 }).text(movie.title);
+      $title.tooltip({
+        delay: 50
+      }).text(movie.title);
 
       const $poster = $('<img>').addClass('poster');
 
@@ -57,4 +59,38 @@
   };
 
   // ADD YOUR CODE HERE
+  let d;
+  // Listen for submission on search form
+  $('button').click(function() {
+    event.preventDefault();
+    let v = $('input[type="text"]')
+    if (v.val() == "") {
+      console.log("can't be empty")
+    }
+    //set request for omdbapi
+    let req = v.val()
+    //reset val field
+    v.val("");
+
+    // console.log(req)
+    //fetch Data
+    var $xhr = $.getJSON('https://omdb-api.now.sh/?s=' + req);
+
+    $xhr.done(function(data) {
+      console.log(data);
+      for (var i = 0; i < data.Search.length; i++) {
+        movies.push ({
+          id: data.Search[i].imdbID,
+          poster: data.Search[i].Poster,
+          title: data.Search[i].Title,
+          year: data.Search[i].Year
+
+        })
+      }
+
+      renderMovies();
+
+    });
+  })
+
 })();
